@@ -1,0 +1,547 @@
+% LaTeX template for Academy of Management (AOM)
+% by Gorkem Aksaray <gaksaray@ku.edu.tr>
+%
+% You may use pdfLaTeX, XeLaTeX, or any other engine to typeset this document.
+% Although this template is compliant with with AOM specifications, it is not
+% an official template. Users are advised to refer to AOM guidelines themselves.
+% Please submit bugs and updates to the GitHub repository at
+% https://github.com/gaksaray/AOM-LaTeX-template.
+
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage{etoolbox,xpatch}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage[american]{babel}
+\usepackage{csquotes}
+
+\usepackage[margin=1in]{geometry}
+%\usepackage{showframe}
+\usepackage[doublespacing]{setspace}
+%\setstretch{2} % for Word-like double spacing
+% \usepackage{microtype}
+\usepackage{newtxtext,newtxmath}
+
+\usepackage[round]{natbib}
+\bibliographystyle{aomlike}
+\renewcommand{\bibsection}{}
+
+\usepackage{titling}
+\pretitle{
+    \pagenumbering{gobble}\setcounter{page}{0}
+    \centering\large\bfseries
+}
+\posttitle{
+    \par
+}
+\preauthor{
+    \begin{singlespace}
+    \centering\normalsize
+    \begin{tabular}[t]{c}
+}
+\postauthor{
+    \end{tabular}
+    \par
+    \end{singlespace}
+}
+\makeatletter
+\newcommand{\insertthanks}{\@thanks}
+\makeatother
+\predate{
+    \begin{center}\normalsize
+    \textbf{\textit{Last update:}}
+}
+\postdate{
+    \par\end{center}
+    \insertthanks\emptythanks\clearpage
+    \pagenumbering{arabic}
+    \insertsubid
+    \centerline{\textbf{\mytitle}}
+    \insertabstract\clearpage
+    \centerline{\textbf{\mytitle}}\vspace*{-0.5\baselineskip}
+}
+
+\usepackage[max3]{authblk}
+
+\raggedright
+\raggedbottom
+\usepackage{indentfirst}
+\parindent=0.5in
+
+\usepackage{enumitem}
+\setlist{nosep,labelindent=\parindent,leftmargin=*}
+
+\usepackage{titlecaps}
+\Addlcwords{a abaft about above afore after along amid among an apud as aside at atop below but by circa down for from given in into lest like mid midst minus near next of off on onto out over pace past per plus pro qua round sans save since than thru till times to under until unto up upon via vice with worth the and nor or yet so}
+
+\setcounter{secnumdepth}{0}
+
+\usepackage[compact]{titlesec}
+\titleformat{\title}
+    {\filcenter\normalfont\bfseries\uppercase}{\thetitle}{0em}{} % \titlecap does not work for title!
+\titleformat{\section}
+    {\singlespacing\filcenter\normalfont\bfseries\uppercase}{\thesection}{0em}{}
+\titleformat{\subsection}
+    {\singlespacing\normalfont\bfseries}{\thesubsection}{0em}{\titlecap}
+\titleformat{\subsubsection}[runin]
+    {\normalfont\bfseries\itshape}{\thesubsubsection}{0em}{\hspace*{\parindent}}[.]
+%\titlespacing*{\section}{0pt}{*0}{0pt}
+%\titlespacing*{\subsection}{0pt}{*0}{0pt}
+%\titlespacing*{\subsubsection}{0pt}{*0}{0.2\parindent}
+
+\renewenvironment*{abstract}[1][<add keywords>]
+    {\def\keywords{#1}
+     \vspace*{2ex}\centerline{\textbf{ABSTRACT}}\vspace*{0.8ex}
+    }
+    {\\[0.5\baselineskip]\noindent\textbf{Keywords:} \keywords}
+
+\newcommand{\theabstract}[2][<add keywords>]{
+    \newcommand{\insertabstract}{
+    \begin{abstract}[#1]
+        {#2}
+    \end{abstract}
+    }
+}
+
+\usepackage{ntheorem}
+\theoremstyle{plain}
+\theoremheaderfont{\normalfont\itshape}
+\theorembodyfont{\itshape}
+\theoremnumbering{arabic}
+\theoremseparator{.}
+\theorempreskip{0\topsep}
+\theorempostskip{0\topsep}
+\theoremindent\parindent
+\theoremrightindent\parindent
+\theoremsymbol{}
+\theoremprework{\singlespacing}
+\theorempostwork{}
+
+\newtheorem{hypothesis}{Hypothesis}
+\makeatletter
+\newcounter{subhypothesis}
+\let\savedc@hypothesis\c@hypothesis
+\newcommand{\subhypothesis}{
+    \setcounter{subhypothesis}{0}
+    \stepcounter{hypothesis}
+    \edef\saved@hypothesis{\thehypothesis}
+    \let\c@hypothesis\c@subhypothesis
+    \renewcommand{\thehypothesis}{\saved@hypothesis\alph{hypothesis}}
+}
+\newcommand{\normhypothesis}{
+    \let\c@hypothesis\savedc@hypothesis
+    \renewcommand\thehypothesis{\arabic{hypothesis}}
+}
+\makeatother
+
+\usepackage{blindtext}
+\usepackage[hidelinks]{hyperref}
+\newcommand{\email}[1]{\href{mailto:#1}{\textit{e-mail: #1}}}
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{14.5pt}
+\newcommand{\submissionid}[1]{
+    \newcommand{\insertsubid}{
+        \thispagestyle{fancy}
+        \renewcommand{\headrulewidth}{0pt}
+        \fancyhead[L]{}
+        \fancyhead[R]{Submission ID: {#1}}
+    }
+}
+
+\usepackage{pdflscape}
+\usepackage{graphicx}
+\usepackage[skip=\topsep]{caption}
+\captionsetup{figurename=FIGURE}
+\captionsetup{tablename=TABLE}
+\captionsetup[figure]{labelfont=bf}
+\captionsetup[table]{labelfont=bf}
+
+\usepackage[nolists]{endfloat}
+\renewcommand{\figureplace}{
+    \centering
+    \begin{singlespace}
+    ------------------------------------\\*
+    Insert Figure \thepostfigure\ about here\\*
+    ------------------------------------
+    \end{singlespace}
+}
+\renewcommand{\tableplace}{
+    \begin{singlespace}\centering
+    ------------------------------------\\*
+    Insert Table \theposttable\ about here\\*
+    ------------------------------------
+    \end{singlespace}
+}
+
+\newenvironment{lfigure}[1][h]{
+    \begin{landscape}
+    \begin{figure}[#1]
+}{
+    \end{figure}
+    \end{landscape}
+}
+\DeclareDelayedFloatFlavor{lfigure}{figure}
+
+\newenvironment{ltable}[1][h]{
+    \begin{landscape}
+    \begin{table}[#1]
+}{
+    \end{table}
+    \end{landscape}
+}
+\DeclareDelayedFloatFlavor{ltable}{table}
+
+\newcommand\figurenote[2][width=\linewidth]{
+    \captionsetup{#1,font=small}
+    \caption*{\textit{Notes:} {#2}}
+}
+
+\newenvironment{addfigure}[4]{
+    \begin{figure}[h]
+        \centering
+        \caption{#3}
+        \begin{minipage}{#1}
+            \includegraphics[width=\textwidth]{#2}
+            \figurenote{#4}
+}{\end{minipage}\end{figure}}
+\DeclareDelayedFloatFlavor{addfigure}{figure}
+
+\newenvironment{addlfigure}[4]{
+    \begin{lfigure}[h]
+        \centering
+        \caption{#3}
+        \begin{minipage}{#1}
+            \includegraphics[width=\textwidth]{#2}
+            \figurenote{#4}
+}{\end{minipage}\end{lfigure}}
+\DeclareDelayedFloatFlavor{addlfigure}{figure}
+
+\usepackage{booktabs}
+\usepackage{threeparttable}
+%\AtBeginEnvironment{threeparttable}{\normalsize}
+%\AtBeginEnvironment{tablenotes}{\footnotesize}
+\newcommand{\tablenote}[1]{
+    \begin{tablenotes}[para,flushleft]
+        \item \textit{Notes:} {#1}
+    \end{tablenotes}
+}
+\newcommand{\tablesource}[1]{
+    \begin{tablenotes}[para,flushleft]
+        \item \textit{Source:} {#1}
+    \end{tablenotes}
+}
+
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\newcommand{\starlegend}{
+%   \begin{tablenotes}[para,flushleft]
+    \vspace*{0.25\baselineskip}
+    \setlength{\tabcolsep}{1pt}
+    \begin{tabular}{rl}
+        \sym{\dagger} & \(p<0.10\)\\
+        \sym{*}       & \(p<0.05\)\\
+        \sym{**}      & \(p<0.01\)\\
+        \sym{***}     & \(p<0.001\)
+    \end{tabular}
+%   \end{tablenotes}
+}
+
+\newenvironment{tptable}[1][h]{
+    \begin{table}[#1]
+        \centering
+        \begin{threeparttable}[b]
+}{
+        \end{threeparttable}
+    \end{table}
+}
+\newenvironment{ltptable}[1][h]{
+    \begin{landscape}
+    \begin{tptable}[#1]
+}{
+    \end{tptable}
+    \end{landscape}
+}
+\DeclareDelayedFloatFlavor{tptable}{table}
+\DeclareDelayedFloatFlavor{ltptable}{table}
+
+\newcommand{\clearendfloats}{
+    \clearpage
+    \processdelayedfloats
+    \clearpage
+}
+\newcommand{\resetfloatcounters}{
+    \setcounter{posttable}{0}
+    \setcounter{table}{0}
+    \setcounter{postfigure}{0}
+    \setcounter{figure}{0}
+}
+\makeatletter
+\preto{\appendix}{
+    \efloat@restorefloats % disables endfloat
+}
+\appto{\appendix}{
+    \clearendfloats
+
+    \pretocmd{\section}{
+        \clearendfloats
+        \resetfloatcounters
+    }{}{}
+
+    \setcounter{secnumdepth}{1}
+
+    \titleformat{\section}
+        {\singlespacing\filcenter\normalfont\bfseries\uppercase}
+        {APPENDIX \thesection:}{0.5em}{}
+
+    % Appendix tables:
+    \renewcommand{\theposttable}{\Alph{section}\arabic{posttable}}
+    \setcounter{posttable}{0}
+    \renewcommand{\thetable}{\Alph{section}\arabic{table}}
+    \setcounter{table}{0}
+
+    % Appendix figures:
+    \renewcommand{\thepostfigure}{\Alph{section}\arabic{postfigure}}
+    \setcounter{postfigure}{0}
+    \renewcommand{\thefigure}{\Alph{section}\arabic{figure}}
+    \setcounter{figure}{0}
+}
+\makeatother
+
+\newcommand{\invisiblesection}[1]{
+  \refstepcounter{section}
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}
+  \sectionmark{#1}
+}
+
+\def\mytitle{\titlecap{
+    A sample \textsf{AOM} draft manuscript%
+}}
+\title{\mytitle\thanks{
+    Acknowledgments go here. \blindtext%
+}}
+\author{\uppercase{First Author}}
+\affil{
+    Current University\\
+    School and/or Department\\
+    Building and/or Street\\
+    City, State, Zip Code\\
+    Tel: (000) 000-0000\\
+    \email{scholar@univ.edu}
+}
+\author{\uppercase{Second Author}}
+\affil{
+    Current University\\
+    School and/or Department\\
+    Building and/or Street\\
+    City, State, Zip Code\\
+    Tel: (000) 000-0000\\
+    \email{scholar@univ.edu}
+}
+\author{\uppercase{Third Author}}
+\affil{
+    Current University\\
+    School and/or Department\\
+    Building and/or Street\\
+    City, State, Zip Code\\
+    Tel: (000) 000-0000\\
+    \email{scholar@univ.edu}
+}
+\theabstract[keyword1, keyword2, keyword3]{
+    The abstract goes here. \blindtext[1]
+}
+\date{\today}
+\submissionid{10000}
+
+
+\begin{document}
+
+\maketitle
+
+%\begin{abstract}[keyword1, keyword2, keyword3]
+%The abstract goes here. \blindtext[1]
+%\end{abstract}
+
+%\section{Introduction}
+\invisiblesection{Introduction}
+
+\blindtext
+
+\section{Theory}
+
+\blindtext
+
+\subsection{Data and methods}
+
+\blindtext
+
+\subhypothesis
+\begin{hypothesis}
+\blindtext
+\end{hypothesis}
+\begin{hypothesis}
+\blindtext
+\end{hypothesis}
+\normhypothesis
+
+\blindtext
+
+\begin{hypothesis}
+\blindtext
+\end{hypothesis}
+
+\blindtext
+
+\begin{hypothesis}
+\blindtext
+\end{hypothesis}
+
+\blindtext
+
+\subsubsection{Some studies}
+
+The most cited papers in AMJ according to their website are \citet{doi:10.5465/amj.2007.24160888}, \citet{doi:10.5465/amj.2007.28166119}, \citet{doi:10.5465/amj.2013.4001}, and \citet{doi:10.5465/amj.2016.4007}.\footnote{See \url{https://journals.aom.org/journal/amj}.} \blindtext
+
+\blindtext
+
+The submission policies are:
+\begin{enumerate}
+    \item Each paper can be submitted to only ONE division or interest group.
+    \item Submitted papers must NOT have been previously presented, scheduled for presentation, published, or accepted for publication by the AOM or any other publisher or organization. If a paper is under review, it must NOT appear in print before the Academy meeting.
+\end{enumerate}
+
+Figure~\ref{fig:a} is added directly via the \verb*|figure| and \verb*|minipage| environments.
+
+\begin{figure}[h]
+    \centering
+    \caption{This is an important figure}\label{fig:a}
+    \begin{minipage}{.5\linewidth}
+    \includegraphics[width=\textwidth]{example-image-a}
+    \figurenote{B is a letter in the alphabet. It comes right after the letter A, and is preceded by the letter C. \blindtext}
+    \end{minipage}
+\end{figure}
+
+I also wrapped these in a new environment, \verb*|add[l]figure|, which takes four arguments: (1) width, (2) image file name, (3) caption (with optional label), and (4) figure note.
+
+\begin{addlfigure}{0.25\linewidth}
+	{example-image-b}{Example image\label{fig:b}}
+	{This is an example image. \blindtext}
+\end{addlfigure}
+
+\blindtext
+
+\begin{table}[h]
+    \centering
+    \caption{This is a description of some data.}
+    \label{tab:data1}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        A & B & C \\ \hline \hline
+        1 & 2 & 3 \\ \hline
+        x & y & z \\ \hline
+    \end{tabular}
+\end{table}
+
+Let's see if it works. Further calculations are presented in Table~\ref{tab:data2} given in Appendix \ref{app:fcalc}. Similarly, supplemental analyses, such as Table~\ref{tab:data3}, are given in Appendix \ref{app:suppa}. The \verb*|endfloat| package is disabled for appendices, that is, tables and figures appear within text.
+
+\begin{ltptable}[h]
+\setlength{\tabcolsep}{0pt}
+    \small
+    \caption{Treatment Effects With New Strategy}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lccccccccc@{}}
+    \toprule
+        \multicolumn{1}{l}{} &
+        \multicolumn{3}{c}{Avg Test Score} &
+        \multicolumn{3}{c}{Avg Passing Rate} &
+        \multicolumn{3}{c}{Avg Participation Rate} \\
+        \cmidrule{2-4}
+        \cmidrule{5-7}
+        \cmidrule{8-10}
+
+VARIABLES   & Male       & Female   & All       & Male          & Female    & All       & Male      & Female& All \\
+
+            &     (1)    & (2)      & (3)       & (4)           & (5)       & (6)       & (7)       & (8)   & (9) \\
+
+\midrule
+            &               &               &                   &           &           &           &       &   &\\
+
+Treatment   &      -26.21   &      -22.18   &       34.08*  &       35.83*  &      -59.34*  &       17.13   &      -26.21   &        9.84   &       -8.46   \\
+            &     [-2.02]   &     [-0.50]   &      [2.42]   &      [2.23]   &     [-2.46]   &      [1.22]   &     [-2.02]   &      [1.24]   &     [-0.78]   \\
+            &     (13.00)   &     (44.77)   &     (14.06)   &     (16.04)   &     (24.12)   &     (14.03)   &     (13.00)   &      (7.93)   &     (10.82)   \\
+Post        &      -26.50** &      -25.47   &      -11.53   &       40.49***&       52.71***&       52.68***&      -26.50** &        2.28   &      -16.49*  \\
+            &     [-3.52]   &     [-1.35]   &     [-1.34]   &      [4.36]   &      [5.18]   &      [6.15]   &     [-3.52]   &      [0.68]   &     [-2.49]   \\
+            &      (7.52)   &     (18.90)   &      (8.59)   &      (9.28)   &     (10.18)   &      (8.57)   &      (7.52)   &      (3.35)   &      (6.61)   \\
+DiD         &       29.65*  &       31.22   &        5.33   &        9.17   &      141.80** &       11.56   &       29.65*  &      -15.08   &        1.07   \\
+            &      [2.13]   &      [0.39]   &      [0.32]   &      [0.53]   &      [3.25]   &      [0.70]   &      [2.13]   &     [-1.05]   &      [0.08]   \\
+            &     (13.89)   &     (80.90)   &     (16.45)   &     (17.14)   &     (43.58)   &     (16.42)   &     (13.89)   &     (14.34)   &     (12.67)   \\
+Constant    &       42.02   &      271.27*  &      222.43***&       65.29*  &      -23.66   &      -38.16   &       42.02   &       23.55   &      -46.42   \\
+            &      [1.87]   &      [2.58]   &      [6.20]   &      [2.36]   &     [-0.42]   &     [-1.07]   &      [1.87]   &      [1.26]   &     [-1.68]   \\
+            &     (22.46)   &    (105.12)   &     (35.85)   &     (27.71)   &     (56.63)   &     (35.78)   &     (22.46)   &     (18.63)   &     (27.59)   \\
+Obs         &       39   &       38   &       47   &       39   &       38.00   &       47   &       39   &       38   &       47   \\ \bottomrule
+    \end{tabular*}
+    \tablenote{\blindtext}
+    \tablesource{\url{https://tex.stackexchange.com/questions/513415/making-table-notes-aligned-with-the-table-width}}
+    \starlegend
+\end{ltptable}
+
+\newpage
+
+\section{References}
+
+\singlespacing
+\bibliography{AMJ_mostcited.bib}
+\doublespacing
+
+\appendix
+
+\section{Further Calculations}\label{app:fcalc}
+
+\blindtext
+
+\begin{addfigure}{0.5\linewidth}
+{example-image-c}{Example image\label{fig:c}}
+{This is an example image. \blindtext}
+\end{addfigure}
+
+\begin{ltable}[h]
+    \centering
+    \caption{This is a description of some other data.}\label{tab:data2}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        A & B & C \\ \hline \hline
+        1 & 2 & 3 \\ \hline
+        x & y & z \\ \hline
+    \end{tabular}
+\end{ltable}
+
+\section{Supplemental Analyses}\label{app:suppa}
+
+\blindtext
+
+\begin{table}[h]
+    \centering
+    \caption{This is a description of some other data.}\label{tab:data3}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        A & B & C \\ \hline \hline
+        1 & 2 & 3 \\ \hline
+        x & y & z \\ \hline
+    \end{tabular}
+\end{table}
+
+\begin{tptable}[h]
+    \centering
+    \caption{This is a description of some other data.}\label{tab:data4}
+    \begin{tabular}{l|c|c|c|}
+        \toprule
+        Uppercase letter: & A & B & C \\ \hline \hline
+        Number: & 1 & 2 & 3 \\ \hline
+        Lowercase letter: & x & y & z \\
+        \bottomrule
+    \end{tabular}
+    \tablenote{There are many interesting things to say about this table.}
+    \tablesource{Bureau of Labor Statistics, April 2022.}
+\end{tptable}
+
+\end{document}
