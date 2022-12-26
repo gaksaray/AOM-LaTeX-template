@@ -1,11 +1,13 @@
-% LaTeX template for Academy of Management (AOM) submissions
-%
-% Author: Gorkem Aksaray <gaksaray@ku.edu.tr>
-%
+% LaTeX template for Academy of Management (AOM) submission
+% 
+% Author: Gorkem Aksaray <aksarayg@tcd.ie>
+% 
 % You may use pdfLaTeX, XeLaTeX, or any other engine to typeset this document.
-% Although this template is compliant with with AOM specifications, it is not an official template.
-% Users are advised to refer to AOM guidelines themselves.
-% Please submit bugs and revisions to the GitHub repository at https://github.com/gaksaray/AOM-LaTeX-template.
+% Although this template is compliant with with AOM specifications, it is not
+% an official template. Users are advised to refer to AOM guidelines themselves.
+% 
+% Please submit bugs and revisions to the GitHub repository at:
+% https://github.com/gaksaray/AOM-LaTeX-template.
 
 \documentclass[12pt,letterpaper]{article}
 
@@ -21,7 +23,7 @@
 %\usepackage{showframe} % uncomment to show frames
 \usepackage[doublespacing]{setspace}
 %\setstretch{2} % uncomment for Word-like double spacing
-% \usepackage{microtype} % uncomment to turn on microtype
+%\usepackage{microtype} % uncomment to turn on microtype
 \usepackage{newtxtext,newtxmath}
 
 \usepackage[round]{natbib}
@@ -58,9 +60,10 @@
     \insertthanks\emptythanks\clearpage
     \pagenumbering{arabic}
     \insertsubid
-    \centerline{\textbf{\mytitle}}
+    \begin{center}{\textbf{\mytitle}}\end{center}
     \insertabstract\clearpage
-    \centerline{\textbf{\mytitle}}\vspace*{-0.5\baselineskip}
+    \begin{center}{\textbf{\mytitle}}\end{center}
+    \vspace*{-0.5\baselineskip}
 }
 
 \usepackage[max3]{authblk}
@@ -316,9 +319,10 @@
   \sectionmark{#1}
 }
 
+% Title page:
 
 \def\mytitle{\titlecap{
-    A sample \textsf{AOM} draft manuscript%
+    A sample \textsf{AOM} draft manuscript:\break Important projects can sometimes have very long and arduous titles%
 }}
 \title{\mytitle\thanks{
     Acknowledgments go here. \blindtext%
@@ -356,6 +360,7 @@
 \date{\today}
 \submissionid{10000}
 
+% Manuscript:
 
 \begin{document}
 
@@ -366,7 +371,7 @@
 %\end{abstract}
 
 %\section{Introduction}
-\invisiblesection{Introduction} % section title not shown!
+\invisiblesection{Introduction} % section title not shown by default!
 
 \blindtext
 
