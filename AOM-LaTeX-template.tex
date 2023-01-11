@@ -159,11 +159,11 @@
 
 \usepackage{pdflscape}
 \usepackage{graphicx}
-\usepackage[skip=\topsep]{caption}
+\usepackage[skip=\topsep,labelsep=newline]{caption}
 \captionsetup{figurename=FIGURE}
 \captionsetup{tablename=TABLE}
-\captionsetup[figure]{labelfont=bf}
-\captionsetup[table]{labelfont=bf}
+\captionsetup[figure]{font=bf}
+\captionsetup[table]{font=bf}
 
 \usepackage[nolists]{endfloat}
 %\renewcommand{\efloatseparator}{} % uncomment for several floats per page
@@ -443,7 +443,7 @@ I also wrapped these in a new environment, \verb*|add[l]figure| (\verb*|l| for l
 
 \begin{table}[h]
     \centering
-    \caption{This is a description of some data.}
+    \caption{This is a description of some data}
     \label{tab:data1}
     \begin{tabular}{|l|l|l|}
         \hline
@@ -513,7 +513,7 @@ Obs         &       39      &       38      &       47      &       39      &   
 
 \begin{ltable}[h]
     \centering
-    \caption{This is a description of some other data.}\label{tab:data2}
+    \caption{This is a description of some other data}\label{tab:data2}
     \begin{tabular}{|l|l|l|}
         \hline
         A & B & C \\ \hline \hline
@@ -528,7 +528,7 @@ Obs         &       39      &       38      &       47      &       39      &   
 
 \begin{table}[h]
     \centering
-    \caption{This is a description of some other data.}\label{tab:data3}
+    \caption{This is a description of some other data}\label{tab:data3}
     \begin{tabular}{|l|l|l|}
         \hline
         A & B & C \\ \hline \hline
@@ -539,7 +539,7 @@ Obs         &       39      &       38      &       47      &       39      &   
 
 \begin{tptable}[h]
     \centering
-    \caption{This is a description of some other data.}\label{tab:data4}
+    \caption{This is a description of some other data}\label{tab:data4}
     \begin{tabular}{l|c|c|c|}
         \toprule
         Uppercase letter: & A & B & C \\ \hline \hline
