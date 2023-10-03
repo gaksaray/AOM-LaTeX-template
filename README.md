@@ -17,8 +17,8 @@ This is an unofficial template for authors preparing a manuscript for an Academy
 
 ## Custom environments
 - `addfigure` and `addlfigure`: Portrait and landscape figure environments with 4 arguments: (1) width, (2) image file name, (3) caption (with optional label), and (4) figure note
-- `tptable` and `ltptable`: Portrait and landscape "three-part" table environments with captions and notes with the same width
-- `hypothesis`: Hypothesis environment with automatic numbering that can be changed at any point from normal- to sub-hypothesis numbering via `\subhypothesis` and `\normhypothesis` commands
+- `tptable` and `ltptable`: Portrait and landscape "three-part" table environments with captions and notes with the same width as the table
+- `hypothesis`: Hypothesis environment with automatic numbering that can be changed at any point from normal hypothesis to sub-hypothesis numbering via `\subhypothesis` and `\normhypothesis` commands
 
 ## Advantages over MS Word
 
