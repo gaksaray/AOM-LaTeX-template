@@ -9,9 +9,10 @@
 % Please submit bugs and revisions to the GitHub repository at:
 % https://github.com/gaksaray/AOM-LaTeX-template.
 
-\documentclass[12pt,letterpaper]{article}
-
-\usepackage{etoolbox,xpatch}
+\documentclass[
+    12pt,
+    letterpaper
+]{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -20,11 +21,11 @@
 \usepackage{csquotes}
 
 \usepackage[margin=1in]{geometry}
-%\usepackage{showframe} % uncomment to show frames
+%\usepackage{showframe} % uncomment to show frames for inspecting page layout
 \usepackage[doublespacing]{setspace}
 %\setstretch{2} % uncomment for Word-like double spacing
-%\usepackage{microtype} % uncomment to turn on microtype
-\usepackage{newtxtext,newtxmath}
+\usepackage{microtype} % comment to turn off microtype
+\usepackage{newtx}
 
 \usepackage[round]{natbib}
 \bibliographystyle{aomlike}
@@ -42,12 +43,12 @@
 }
 \preauthor{
     \begin{singlespace}
-    \centering\normalsize
-    \begin{tabular}[t]{c}
+        \centering\normalsize
+        \begin{tabular}[t]{c}
 }
 \postauthor{
-    \end{tabular}
-    \par
+        \end{tabular}
+        \par
     \end{singlespace}
 }
 \makeatletter
@@ -98,8 +99,7 @@
 
 \renewenvironment*{abstract}[1][<add keywords>]
     {\def\keywords{#1}
-     \vspace*{2ex}\centerline{\textbf{ABSTRACT}}\vspace*{0.8ex}
-    }
+     \vspace*{2ex}\centerline{\textbf{ABSTRACT}}\vspace*{0.8ex}}
     {\\[0.5\baselineskip]\noindent\textbf{Keywords:} \keywords}
 
 \newcommand{\theabstract}[2][<add keywords>]{
@@ -167,7 +167,9 @@
 
 \usepackage[nolists]{endfloat}
 %\renewcommand{\efloatseparator}{} % uncomment for several floats per page
-\renewcommand{\figureplace}{
+
+\usepackage{multirow}
+\renewcommand{\figureplace}{%
     \centering
     \begin{singlespace}
     ------------------------------------\\*
@@ -185,18 +187,18 @@
 
 \newenvironment{lfigure}[1][h]{
     \begin{landscape}
-    \begin{figure}[#1]
+        \begin{figure}[#1]
 }{
-    \end{figure}
+        \end{figure}
     \end{landscape}
 }
 \DeclareDelayedFloatFlavor{lfigure}{figure}
 
 \newenvironment{ltable}[1][h]{
     \begin{landscape}
-    \begin{table}[#1]
+        \begin{table}[#1]
 }{
-    \end{table}
+        \end{table}
     \end{landscape}
 }
 \DeclareDelayedFloatFlavor{ltable}{table}
@@ -213,7 +215,10 @@
         \begin{minipage}{#1}
             \includegraphics[width=\textwidth]{#2}
             \figurenote{#4}
-}{\end{minipage}\end{figure}}
+}{
+        \end{minipage}
+    \end{figure}
+}
 \DeclareDelayedFloatFlavor{addfigure}{figure}
 
 \newenvironment{addlfigure}[4]{
@@ -223,7 +228,10 @@
         \begin{minipage}{#1}
             \includegraphics[width=\textwidth]{#2}
             \figurenote{#4}
-}{\end{minipage}\end{lfigure}}
+}{
+        \end{minipage}
+    \end{lfigure}
+}
 \DeclareDelayedFloatFlavor{addlfigure}{figure}
 
 \usepackage{booktabs}
@@ -265,9 +273,9 @@
 }
 \newenvironment{ltptable}[1][h]{
     \begin{landscape}
-    \begin{tptable}[#1]
+        \begin{tptable}[#1]
 }{
-    \end{tptable}
+        \end{tptable}
     \end{landscape}
 }
 \DeclareDelayedFloatFlavor{tptable}{table}
@@ -290,24 +298,24 @@
 }
 \appto{\appendix}{
     \clearendfloats
-
+    
     \pretocmd{\section}{
         \clearendfloats
         \resetfloatcounters
     }{}{}
-
+    
     \setcounter{secnumdepth}{1}
-
+    
     \titleformat{\section}
         {\singlespacing\filcenter\normalfont\bfseries\uppercase}
         {APPENDIX \thesection:}{0.5em}{}
-
+    
     % Appendix tables:
     \renewcommand{\theposttable}{\Alph{section}\arabic{posttable}}
     \setcounter{posttable}{0}
     \renewcommand{\thetable}{\Alph{section}\arabic{table}}
     \setcounter{table}{0}
-
+    
     % Appendix figures:
     \renewcommand{\thepostfigure}{\Alph{section}\arabic{postfigure}}
     \setcounter{postfigure}{0}
@@ -496,9 +504,9 @@ Obs         &       39      &       38      &       47      &       39      &   
 
 \section{References}
 
-\singlespacing
-\bibliography{AMJ_mostcited.bib}
-\doublespacing
+\begin{singlespace}
+    \bibliography{AMJ_mostcited.bib}
+\end{singlespace}
 
 \appendix
 
