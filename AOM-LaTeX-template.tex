@@ -168,30 +168,21 @@
 \usepackage[nolists]{endfloat}
 %\renewcommand{\efloatseparator}{} % uncomment for several floats per page
 
-\usepackage{multirow,booktabs}
-\renewcommand\figureplace[1]{%
-    \begin{center}
-        \renewcommand{\arraystretch}{2}
-        \begin{tabular}{c}
-            \hline
-            \multirow{1}{*}{%
-                Insert Figure \thepostfigure\ about here.
-            }\\
-            \hline
-        \end{tabular}
-    \end{center}
+\usepackage{multirow}
+\renewcommand{\figureplace}{%
+    \centering
+    \begin{singlespace}
+    ------------------------------------\\*
+    Insert Figure \thepostfigure\ about here\\*
+    ------------------------------------
+    \end{singlespace}
 }
-\renewcommand\tableplace[1]{%
-    \begin{center}
-        \renewcommand{\arraystretch}{1.5}
-        \begin{tabular}{c}
-            \hline
-            \multirow{1}{*}{%
-                Insert Table \theposttable\ about here.
-            }\\
-            \hline
-        \end{tabular}
-    \end{center}
+\renewcommand{\tableplace}{
+    \begin{singlespace}\centering
+    ------------------------------------\\*
+    Insert Table \theposttable\ about here\\*
+    ------------------------------------
+    \end{singlespace}
 }
 
 \newenvironment{lfigure}[1][h]{
