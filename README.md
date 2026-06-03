@@ -1,5 +1,7 @@
 # LaTeX template for Academy of Management (AOM) submissions
 
+[![Open in Overleaf](https://img.shields.io/badge/Open%20in-Overleaf-47A141?logo=overleaf)](https://www.overleaf.com/latex/templates/academy-of-management-journal-submission-template/wtssfsygmfnm)
+
 This is an unofficial template for authors preparing a manuscript for an Academy of Management journal (or the annual conference) using the [LaTeX document preparation system](https://www.latex-project.org). It is fully compliant with the editorial "[Style Guide for Authors](https://aom.org/docs/default-source/publishing-with-aom/aom_journal_style_guidea3b84b773e3649569a17a05e14cc6eaf.pdf?sfvrsn=f94177b2_4)" and the [conference paper submission sample](https://aom.org/docs/default-source/events/sample_submission_paper.pdf) provided by the [Academy](https://aom.org).
 
 This template is available on [Overleaf](https://www.overleaf.com/latex/templates/academy-of-management-journal-submission-template/wtssfsygmfnm).
