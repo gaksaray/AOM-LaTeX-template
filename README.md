@@ -26,7 +26,7 @@ This template is available on [Overleaf](https://www.overleaf.com/latex/template
 
 Here is a [StackExchange](https://academia.stackexchange.com/questions/5414/what-are-the-advantages-or-disadvantages-of-using-latex-for-writing-scientific-p) discussion on advantages of LaTeX over Word. LaTeX produces `.pdf` documents. If you need to convert this output to `.docx`, you can open the `.pdf` file in Word and it will be automatically converted.
 
-## Used packages
+## Packages
 - `authblk`: Support for footnote style author/affiliation blocks when there are 4 or more authors
 - `babel`: American English hyphenation and language support
 - `blindtext`: Placeholder ("lorem ipsum" style) text used throughout the template example
