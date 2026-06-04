@@ -309,13 +309,9 @@ FUNCTION {format.names}
       nameptr #1 >
 	{ namesleft #1 >
 	    { ", " * t * }
-	    { numnames #2 >
-		{ "," * }
-		'skip$
-	      if$
-	      t "others" =
-		{ " et~al." * }
-		{ " and " * t * }
+	    { t "others" =
+		{ ", et~al." * }
+		{ ", \& " * t * }
 	      if$
 	    }
 	  if$
@@ -360,7 +356,7 @@ FUNCTION {format.full.names}
                   if$
                   t "others" =
                     { " et~al." * }
-                    { " and " * t * }
+                    { " \harvardand\ " * t * }
                   if$
                 }
               if$
@@ -1064,7 +1060,7 @@ FUNCTION {format.lab.names}
 	'skip$
 	{ s #2 "{ff }{vv }{ll}{ jj}" format.name$ "others" =
 	    { " et~al." * }
-	    { " and " * s #2 "{vv~}{ll}" format.name$ * }
+	    { " \harvardand\ " * s #2 "{vv~}{ll}" format.name$ * }
 	  if$
 	}
       if$

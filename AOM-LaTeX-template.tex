@@ -33,6 +33,15 @@
 \setcitestyle{notesep={: }}
 \setlength\bibhang{0.5in}
 \renewcommand{\bibsection}{}
+\makeatletter
+% AOM/APA: use "&" between authors in parenthetical citations and "and" in
+% narrative ones. The bst joins the final author with \harvardand; we make it
+% \protected so it survives into the .aux unexpanded, then natbib renders every
+% author string through \NAT@nmfmt where \ifNAT@swa is true for \citep
+% (parenthetical) and false for \citet (narrative).
+\protected\def\harvardand{and}
+\renewcommand\NAT@nmfmt[1]{{\NAT@up\ifNAT@swa\def\harvardand{\&}\fi#1}}
+\makeatother
 
 \usepackage{titling}
 \pretitle{
