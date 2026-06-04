@@ -38,9 +38,11 @@
 % narrative ones. The bst joins the final author with \harvardand; we make it
 % \protected so it survives into the .aux unexpanded, then natbib renders every
 % author string through \NAT@nmfmt where \ifNAT@swa is true for \citep
-% (parenthetical) and false for \citet (narrative).
+% (parenthetical) and false for \citet (narrative). The \harvardand switch must
+% come before \NAT@up so the latter stays adjacent to #1 (the \Cite* variants
+% make \NAT@up a one-argument macro).
 \protected\def\harvardand{and}
-\renewcommand\NAT@nmfmt[1]{{\NAT@up\ifNAT@swa\def\harvardand{\&}\fi#1}}
+\renewcommand\NAT@nmfmt[1]{{\ifNAT@swa\def\harvardand{\&}\fi\NAT@up#1}}
 \makeatother
 
 \usepackage{titling}
