@@ -341,34 +341,38 @@ FUNCTION {format.authors}
 
 FUNCTION {format.full.names}
 {'s :=
-  #1 'nameptr :=
-  s num.names$ 'numnames :=
-  numnames 'namesleft :=
-    { namesleft #0 > }
-    { s nameptr
-      "{vv~}{ll}" format.name$ 't :=
-      nameptr #1 >
-        {
-          namesleft #1 >
-            { ", " * t * }
+  s num.names$ #6 >
+    { s #1 "{vv~}{ll}" format.name$ " et~al." * }   % 7+ authors: et al. even on first cite
+    { #1 'nameptr :=
+      s num.names$ 'numnames :=
+      numnames 'namesleft :=
+        { namesleft #0 > }
+        { s nameptr
+          "{vv~}{ll}" format.name$ 't :=
+          nameptr #1 >
             {
-              numnames #2 >
-                { "," * }
-                'skip$
-              if$
-              t "others" =
-                { " et~al." * }
-                { " and " * t * }
+              namesleft #1 >
+                { ", " * t * }
+                {
+                  numnames #2 >
+                    { "," * }
+                    'skip$
+                  if$
+                  t "others" =
+                    { " et~al." * }
+                    { " and " * t * }
+                  if$
+                }
               if$
             }
+            't
           if$
+          nameptr #1 + 'nameptr :=
+          namesleft #1 - 'namesleft :=
         }
-        't
-      if$
-      nameptr #1 + 'nameptr :=
-      namesleft #1 - 'namesleft :=
+      while$
     }
-  while$
+  if$
 }
 
 FUNCTION {author.editor.full}
