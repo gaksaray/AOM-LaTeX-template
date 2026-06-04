@@ -82,7 +82,7 @@ ENTRY
     year
   }
   {}
-  { label extra.label sort.label }
+  { label extra.label sort.label short.list }
 
 INTEGERS { output.state before.all mid.sentence after.sentence after.block }
 
@@ -174,17 +174,8 @@ FUNCTION {output.year.check}
 
 
 
-FUNCTION {output.bibitem}
-{ newline$
-  "\bibitem[" write$
-  label write$
-  "]{" write$
-  cite$ write$
-  "}" write$
-  newline$
-  ""
-  before.all 'output.state :=
-}
+% output.bibitem is defined later (after make.full.names), so that it can emit
+% the natbib author-year label format \bibitem[short(year)full]{key}.
 
 FUNCTION {fin.entry}
 { add.period$
@@ -343,6 +334,97 @@ FUNCTION {format.authors}
     { author format.names }
   if$
 }
+
+% --- natbib author-year label support (full author lists) -----------------
+% These produce the full author list used by natbib's longnamesfirst option
+% for the first citation of a multi-author work.
+
+FUNCTION {format.full.names}
+{'s :=
+  #1 'nameptr :=
+  s num.names$ 'numnames :=
+  numnames 'namesleft :=
+    { namesleft #0 > }
+    { s nameptr
+      "{vv~}{ll}" format.name$ 't :=
+      nameptr #1 >
+        {
+          namesleft #1 >
+            { ", " * t * }
+            {
+              numnames #2 >
+                { "," * }
+                'skip$
+              if$
+              t "others" =
+                { " et~al." * }
+                { " and " * t * }
+              if$
+            }
+          if$
+        }
+        't
+      if$
+      nameptr #1 + 'nameptr :=
+      namesleft #1 - 'namesleft :=
+    }
+  while$
+}
+
+FUNCTION {author.editor.full}
+{ author empty$
+    { editor empty$
+        { "" }
+        { editor format.full.names }
+      if$
+    }
+    { author format.full.names }
+  if$
+}
+
+FUNCTION {author.full}
+{ author empty$
+    { "" }
+    { author format.full.names }
+  if$
+}
+
+FUNCTION {editor.full}
+{ editor empty$
+    { "" }
+    { editor format.full.names }
+  if$
+}
+
+FUNCTION {make.full.names}
+{ type$ "book" =
+  type$ "inbook" =
+  or
+    'author.editor.full
+    { type$ "proceedings" =
+        'editor.full
+        'author.full
+      if$
+    }
+  if$
+}
+
+FUNCTION {output.bibitem}
+{ newline$
+  "\bibitem[" write$
+  label write$
+  ")" make.full.names duplicate$ short.list =
+     { pop$ }
+     { * }
+   if$
+  "]{" * write$
+  cite$ write$
+  "}" write$
+  newline$
+  ""
+  before.all 'output.state :=
+}
+% --------------------------------------------------------------------------
 
 FUNCTION {format.key}			% this function is just for apalike
 { empty$
@@ -1023,21 +1105,31 @@ FUNCTION {editor.key.label}
   if$
 }
 
-FUNCTION {calc.label}      % this function came from ASTRON.BST (ARR)
+FUNCTION {calc.short.authors}      % natbib: short author list (e.g. "Lee et~al.")
 { type$ "book" =
   type$ "inbook" =
   or
     'author.editor.key.label
     { type$ "proceedings" =
-        'editor.key.label                       % apalike ignores organization
-        'author.key.label                       % for labeling and sorting
+        'editor.key.label
+        'author.key.label
       if$
     }
   if$
-  "\protect\astroncite{" swap$ * "}{"                   % these three lines are
-  *                                                     % for apalike, which
-  year field.or.null purify$ #-1 #4 substring$          % uses all four digits
-  *                       % the mathing closing "}" comes in at the reverse.pass
+  'short.list :=
+}
+
+FUNCTION {calc.label}              % natbib author-year label: short(year
+{ calc.short.authors
+  short.list
+  "("
+  *
+  year duplicate$ empty$
+  short.list key field.or.null = or
+     { pop$ "" }
+     'skip$
+  if$
+  *
   'label :=
 }
 
@@ -1176,13 +1268,19 @@ FUNCTION {forward.pass}
   if$
 }
 
-FUNCTION {reverse.pass}       % this function came from ASTRON.BST (ARR)
+FUNCTION {reverse.pass}       % natbib: append \natexlab-wrapped disambiguator
 { next.extra "b" =
     { "a" 'extra.label := }
     'skip$
   if$
-  label extra.label * "}" * 'label :=
   extra.label 'next.extra :=
+  extra.label
+  duplicate$ empty$
+    'skip$
+    { "{\natexlab{" swap$ * "}}" * }
+  if$
+  'extra.label :=
+  label extra.label * 'label :=
 }
 
 EXECUTE {initialize.extra.label.stuff}
@@ -1219,6 +1317,7 @@ FUNCTION {begin.bib}
     { preamble$ write$ newline$ }
   if$
   "\begin{thebibliography}{}" write$ newline$		% no labels in apalike
+  "\providecommand{\natexlab}[1]{#1}" write$ newline$
 }
 
 EXECUTE {begin.bib}
