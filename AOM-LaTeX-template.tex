@@ -28,11 +28,22 @@
 \usepackage[doublespacing]{setspace}
 %\setstretch{2} % uncomment for Word-like double spacing
 
-\usepackage[round]{natbib}
+\usepackage[round,longnamesfirst]{natbib}
 \bibliographystyle{aomlike}
 \setcitestyle{notesep={: }}
 \setlength\bibhang{0.5in}
 \renewcommand{\bibsection}{}
+\makeatletter
+% AOM/APA: use "&" between authors in parenthetical citations and "and" in
+% narrative ones. The bst joins the final author with \harvardand; we make it
+% \protected so it survives into the .aux unexpanded, then natbib renders every
+% author string through \NAT@nmfmt where \ifNAT@swa is true for \citep
+% (parenthetical) and false for \citet (narrative). The \harvardand switch must
+% come before \NAT@up so the latter stays adjacent to #1 (the \Cite* variants
+% make \NAT@up a one-argument macro).
+\protected\def\harvardand{and}
+\renewcommand\NAT@nmfmt[1]{{\ifNAT@swa\def\harvardand{\&}\fi\NAT@up#1}}
+\makeatother
 
 \usepackage{titling}
 \pretitle{
@@ -420,7 +431,7 @@
 
 \subsubsection{Some studies}
 
-The most cited papers in AMJ according to their website are \citet[32]{doi:10.5465/amj.2007.24160888}, \citet{doi:10.5465/amj.2007.28166119}, \citet{doi:10.5465/amj.2013.4001}, and \citet{doi:10.5465/amj.2016.4007}.\footnote{This is an example of a footnote. See \url{https://journals.aom.org/journal/amj}.} \blindtext
+The most cited papers in AMJ according to their website are \citet[32]{doi:10.5465/amj.2007.24160888}, \citet{doi:10.5465/amj.2007.28166119}, \citet{doi:10.5465/amj.2013.4001}, and \citet{doi:10.5465/amj.2016.4007}.\footnote{This is an example of a footnote. See \url{https://journals.aom.org/journal/amj}.} For works with three or more authors, the first citation lists every author (as above), whereas later citations are shortened to the first author followed by \textit{et al.}---for example, citing the last of these works again yields \citep{doi:10.5465/amj.2016.4007}. \blindtext
 
 \blindtext
 
