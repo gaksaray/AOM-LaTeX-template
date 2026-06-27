@@ -177,7 +177,7 @@
 \captionsetup[figure]{font=bf}
 \captionsetup[table]{font=bf}
 
-\usepackage[nolists]{endfloat}
+\usepackage[nolists,tablesfirst]{endfloat}
 %\renewcommand{\efloatseparator}{} % uncomment for several floats per page
 
 \renewcommand{\figureplace}{%
@@ -267,10 +267,10 @@
     \vspace*{0.25\baselineskip}
     \setlength{\tabcolsep}{1pt}
     \begin{tabular}{rl}
-        \sym{\dagger} & \(p<0.10\)\\
-        \sym{*}       & \(p<0.05\)\\
-        \sym{**}      & \(p<0.01\)\\
-        \sym{***}     & \(p<0.001\)
+        \sym{\dagger} & \(p<.10\)\\
+        \sym{*}       & \(p<.05\)\\
+        \sym{**}      & \(p<.01\)\\
+        \sym{***}     & \(p<.001\)
     \end{tabular}
 %   \end{tablenotes}
 }
@@ -353,7 +353,7 @@
 \author{\uppercase{First Author}}
 \affil{
     Current University\\
-    School and/or Department\\
+    % School and/or Department\\
     Building and/or Street\\
     City, State, Zip Code\\
     Tel: (000) 000-0000\\
@@ -362,7 +362,7 @@
 \author{\uppercase{Second Author}}
 \affil{
     Current University\\
-    School and/or Department\\
+    % School and/or Department\\
     Building and/or Street\\
     City, State, Zip Code\\
     Tel: (000) 000-0000\\
@@ -371,7 +371,7 @@
 \author{\uppercase{Third Author}}
 \affil{
     Current University\\
-    School and/or Department\\
+    % School and/or Department\\
     Building and/or Street\\
     City, State, Zip Code\\
     Tel: (000) 000-0000\\
@@ -402,7 +402,7 @@
 
 \blindtext
 
-\subsection{Data and methods}
+\subsection{Theoretical Framework}
 
 \blindtext
 
@@ -432,6 +432,8 @@
 \subsubsection{Some studies}
 
 The most cited papers in AMJ according to their website are \citet[32]{doi:10.5465/amj.2007.24160888}, \citet{doi:10.5465/amj.2007.28166119}, \citet{doi:10.5465/amj.2013.4001}, and \citet{doi:10.5465/amj.2016.4007}.\footnote{This is an example of a footnote. See \url{https://journals.aom.org/journal/amj}.} For works with three or more authors, the first citation lists every author (as above), whereas later citations are shortened to the first author followed by \textit{et al.}---for example, citing the last of these works again yields \citep{doi:10.5465/amj.2016.4007}. \blindtext
+
+\section{Results}
 
 \blindtext
 
@@ -504,7 +506,7 @@ DiD         &       29.65*  &       31.22   &        5.33   &        9.17   &   
 Constant    &       42.02   &      271.27*  &      222.43***&       65.29*  &      -23.66   &      -38.16   &       42.02   &       23.55   &      -46.42   \\
             &      [1.87]   &      [2.58]   &      [6.20]   &      [2.36]   &     [-0.42]   &     [-1.07]   &      [1.87]   &      [1.26]   &     [-1.68]   \\
             &     (22.46)   &    (105.12)   &     (35.85)   &     (27.71)   &     (56.63)   &     (35.78)   &     (22.46)   &     (18.63)   &     (27.59)   \\
-Obs         &       39      &       38      &       47      &       39      &       38.00   &       47      &       39      &       38      &       47      \\
+Obs         &       39      &       38      &       47      &       39      &       38   &       47      &       39      &       38      &       47      \\
 \bottomrule
     \end{tabular*}
     \tablenote{\blindtext}
