@@ -14,9 +14,9 @@
     letterpaper
 ]{article}
 
-\usepackage{newtx}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{newtx}
 
 \usepackage[american]{babel}
 \usepackage{csquotes}
@@ -154,9 +154,6 @@
 \makeatother
 
 \usepackage{blindtext}
-
-\usepackage[hidelinks]{hyperref}
-\newcommand{\email}[1]{\href{mailto:#1}{\textit{e-mail: #1}}}
 
 \usepackage{fancyhdr}
 \setlength{\headheight}{14.5pt}
@@ -341,6 +338,9 @@
   \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}
   \sectionmark{#1}
 }
+
+\usepackage[hidelinks]{hyperref}
+\newcommand{\email}[1]{\href{mailto:#1}{\textit{e-mail: #1}}}
 
 % Title page:
 
