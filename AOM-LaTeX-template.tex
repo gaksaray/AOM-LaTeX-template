@@ -1,11 +1,11 @@
 % LaTeX template for Academy of Management (AOM) submission
-% 
+%
 % Author: Gorkem Aksaray <aksarayg@tcd.ie>
-% 
+%
 % You may use pdfLaTeX, XeLaTeX, or any other engine to typeset this document.
-% Although this template is compliant with with AOM specifications, it is not
+% Although this template is compliant with AOM specifications, it is not
 % an official template. Users are advised to refer to AOM guidelines themselves.
-% 
+%
 % Please submit bugs and revisions to the GitHub repository at:
 % https://github.com/gaksaray/AOM-LaTeX-template.
 
@@ -22,6 +22,7 @@
 \usepackage{csquotes}
 
 \usepackage{microtype}
+\usepackage{etoolbox}
 
 \usepackage[margin=1in]{geometry}
 %\usepackage{showframe} % uncomment to inspect page layout
@@ -86,7 +87,7 @@
 \raggedright
 \raggedbottom
 \usepackage{indentfirst}
-\parindent=0.5in
+\setlength{\parindent}{0.5in}
 
 \usepackage{enumitem}
 \setlist{nosep,labelindent=\parindent,leftmargin=*}
@@ -97,8 +98,6 @@
 \setcounter{secnumdepth}{0}
 
 \usepackage[compact]{titlesec}
-\titleformat{\title}
-    {\filcenter\normalfont\bfseries\uppercase}{\thetitle}{0em}{} % \titlecap does not work for title!
 \titleformat{\section}
     {\singlespacing\filcenter\normalfont\bfseries\uppercase}{\thesection}{0em}{}
 \titleformat{\subsection}
@@ -114,12 +113,12 @@
      \vspace*{2ex}\centerline{\textbf{ABSTRACT}}\vspace*{0.8ex}}
     {\\[0.5\baselineskip]\noindent\textbf{Keywords:} \keywords}
 
-\newcommand{\theabstract}[2][<add keywords>]{
-    \newcommand{\insertabstract}{
-    \begin{abstract}[#1]
-        {#2}
-    \end{abstract}
-    }
+\newcommand{\theabstract}[2][<add keywords>]{%
+    \newcommand{\insertabstract}{%
+        \begin{abstract}[#1]
+            {#2}
+        \end{abstract}%
+    }%
 }
 
 \usepackage{ntheorem}
@@ -140,16 +139,16 @@
 \makeatletter
 \newcounter{subhypothesis}
 \let\savedc@hypothesis\c@hypothesis
-\newcommand{\subhypothesis}{
-    \setcounter{subhypothesis}{0}
-    \stepcounter{hypothesis}
-    \edef\saved@hypothesis{\thehypothesis}
+\newcommand{\subhypothesis}{%
+    \setcounter{subhypothesis}{0}%
+    \stepcounter{hypothesis}%
+    \edef\saved@hypothesis{\thehypothesis}%
     \let\c@hypothesis\c@subhypothesis
-    \renewcommand{\thehypothesis}{\saved@hypothesis\alph{hypothesis}}
+    \renewcommand{\thehypothesis}{\saved@hypothesis\alph{hypothesis}}%
 }
-\newcommand{\normhypothesis}{
+\newcommand{\normhypothesis}{%
     \let\c@hypothesis\savedc@hypothesis
-    \renewcommand\thehypothesis{\arabic{hypothesis}}
+    \renewcommand\thehypothesis{\arabic{hypothesis}}%
 }
 \makeatother
 
@@ -157,41 +156,37 @@
 
 \usepackage{fancyhdr}
 \setlength{\headheight}{14.5pt}
-\newcommand{\submissionid}[1]{
-    \newcommand{\insertsubid}{
-        \thispagestyle{fancy}
-        \renewcommand{\headrulewidth}{0pt}
-        \fancyhead[L]{}
-        \fancyhead[R]{Submission ID: {#1}}
-    }
+\newcommand{\submissionid}[1]{%
+    \newcommand{\insertsubid}{%
+        \thispagestyle{fancy}%
+        \renewcommand{\headrulewidth}{0pt}%
+        \fancyhead[L]{}%
+        \fancyhead[R]{Submission ID: {#1}}%
+    }%
 }
 
 \usepackage{pdflscape}
 \usepackage{graphicx}
 \usepackage[skip=\topsep,labelsep=newline]{caption}
-\captionsetup{figurename=FIGURE}
-\captionsetup{tablename=TABLE}
+\captionsetup{figurename=FIGURE,tablename=TABLE}
 \captionsetup[figure]{font=bf}
 \captionsetup[table]{font=bf}
 
 \usepackage[nolists,tablesfirst]{endfloat}
 %\renewcommand{\efloatseparator}{} % uncomment for several floats per page
 
-\renewcommand{\figureplace}{%
-    \centering
-    \begin{singlespace}
-    ------------------------------------\\*
-    Insert Figure \thepostfigure\ about here\\*
-    ------------------------------------
-    \end{singlespace}
-}
-\renewcommand{\tableplace}{
+\makeatletter
+% In-text marker left where a deferred float originally appeared.
+\newcommand{\aom@floatmarker}[2]{%
     \begin{singlespace}\centering
     ------------------------------------\\*
-    Insert Table \theposttable\ about here\\*
+    Insert #1 #2\ about here\\*
     ------------------------------------
-    \end{singlespace}
+    \end{singlespace}%
 }
+\renewcommand{\figureplace}{\aom@floatmarker{Figure}{\thepostfigure}}
+\renewcommand{\tableplace}{\aom@floatmarker{Table}{\theposttable}}
+\makeatother
 
 \newenvironment{lfigure}[1][h]{
     \begin{landscape}
@@ -230,15 +225,11 @@
 \DeclareDelayedFloatFlavor{addfigure}{figure}
 
 \newenvironment{addlfigure}[4]{
-    \begin{lfigure}[h]
-        \centering
-        \caption{#3}
-        \begin{minipage}{#1}
-            \includegraphics[width=\textwidth]{#2}
-            \figurenote{#4}
-}{
-        \end{minipage}
-    \end{lfigure}
+    \begin{landscape}
+        \begin{addfigure}{#1}{#2}{#3}{#4}%
+}{%
+        \end{addfigure}
+    \end{landscape}
 }
 \DeclareDelayedFloatFlavor{addlfigure}{figure}
 
@@ -247,29 +238,26 @@
 \usepackage{threeparttable}
 %\AtBeginEnvironment{threeparttable}{\normalsize}
 %\AtBeginEnvironment{tablenotes}{\footnotesize}
-\newcommand{\tablenote}[1]{
+\makeatletter
+\newcommand{\aom@tablenote}[2]{%
     \begin{tablenotes}[para,flushleft]
-        \item \textit{Notes:} {#1}
-    \end{tablenotes}
+        \item \textit{#1:} {#2}
+    \end{tablenotes}%
 }
-\newcommand{\tablesource}[1]{
-    \begin{tablenotes}[para,flushleft]
-        \item \textit{Source:} {#1}
-    \end{tablenotes}
-}
+\newcommand{\tablenote}{\aom@tablenote{Notes}}
+\newcommand{\tablesource}{\aom@tablenote{Source}}
+\makeatother
 
 \def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
-\newcommand{\starlegend}{
-%   \begin{tablenotes}[para,flushleft]
-    \vspace*{0.25\baselineskip}
-    \setlength{\tabcolsep}{1pt}
+\newcommand{\starlegend}{%
+    \vspace*{0.25\baselineskip}%
+    \setlength{\tabcolsep}{1pt}%
     \begin{tabular}{rl}
         \sym{\dagger} & \(p<.10\)\\
         \sym{*}       & \(p<.05\)\\
         \sym{**}      & \(p<.01\)\\
         \sym{***}     & \(p<.001\)
-    \end{tabular}
-%   \end{tablenotes}
+    \end{tabular}%
 }
 
 \newenvironment{tptable}[1][h]{
@@ -307,36 +295,31 @@
 }
 \appto{\appendix}{
     \clearendfloats
-    
+
     \pretocmd{\section}{
         \clearendfloats
         \resetfloatcounters
     }{}{}
-    
+
     \setcounter{secnumdepth}{1}
-    
+
     \titleformat{\section}
         {\singlespacing\filcenter\normalfont\bfseries\uppercase}
         {APPENDIX \thesection:}{0.5em}{}
-    
-    % Appendix tables:
+
+    % Appendix tables and figures are numbered per section (e.g., A1, B2):
     \renewcommand{\theposttable}{\Alph{section}\arabic{posttable}}
-    \setcounter{posttable}{0}
     \renewcommand{\thetable}{\Alph{section}\arabic{table}}
-    \setcounter{table}{0}
-    
-    % Appendix figures:
     \renewcommand{\thepostfigure}{\Alph{section}\arabic{postfigure}}
-    \setcounter{postfigure}{0}
     \renewcommand{\thefigure}{\Alph{section}\arabic{figure}}
-    \setcounter{figure}{0}
+    \resetfloatcounters
 }
 \makeatother
 
-\newcommand{\invisiblesection}[1]{
-  \refstepcounter{section}
-  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}
-  \sectionmark{#1}
+\newcommand{\invisiblesection}[1]{%
+    \refstepcounter{section}%
+    \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+    \sectionmark{#1}%
 }
 
 \usepackage[hidelinks]{hyperref}
@@ -450,15 +433,15 @@ Figure~\ref{fig:a} is added directly via the \verb*|figure| and \verb*|minipage|
     \caption{This is an important figure}\label{fig:a}
     \begin{minipage}{.5\linewidth}
     \includegraphics[width=\textwidth]{example-image-a}
-    \figurenote{B is a letter in the alphabet. It comes right after the letter A, and is preceded by the letter C. \blindtext}
+    \figurenote{B is a letter in the alphabet. It comes right after the letter A, and is followed by the letter C. \blindtext}
     \end{minipage}
 \end{figure}
 
-I also wrapped these in a new environment, \verb*|add[l]figure| (\verb*|l| for landscape) , which takes four arguments: (1) width, (2) image file name, (3) caption (with optional label), and (4) figure note.
+I also wrapped these in a new environment, \verb*|add[l]figure| (\verb*|l| for landscape), which takes four arguments: (1) width, (2) image file name, (3) caption (with optional label), and (4) figure note.
 
 \begin{addlfigure}{0.25\linewidth}
-	{example-image-b}{Example image\label{fig:b}}
-	{This is an example image. \blindtext}
+    {example-image-b}{Example image\label{fig:b}}
+    {This is an example image. \blindtext}
 \end{addlfigure}
 
 \blindtext
