@@ -37,6 +37,7 @@ Here is a [StackExchange](https://academia.stackexchange.com/questions/5414/what
 - `csquotes`: Context-sensitive quotation marks, used as a companion to `babel`
 - `enumitem`: Customization of list environments to match AOM indentation and spacing
 - `endfloat`: Automatic deferral of all tables and figures to the end of the manuscript per AOM requirements, with in-text placement markers inserted automatically
+- `etoolbox`: Programming utilities (`\preto`, `\appto`, `\pretocmd`) used to hook the appendix setup into `\appendix` and `\section`
 - `fancyhdr`: Custom page headers; used to display the submission ID on the abstract page
 - `fontenc`: T1 font encoding for correct hyphenation, ligatures, and accented character support
 - `geometry`: US letter page size with one-inch margins on all sides
