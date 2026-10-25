@@ -1,28 +1,28 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
-%%%     author          = "Jason",
-%%%     version         = "1.0",
-%%%     date            = "January 12, 2015",
-%%%     filename        = "aomcite.bst",
-%%%     Insitution      = "Dept of Sociology, University of Chicago,
-%%%                     = "Visiting Researcher, Lazer Lab, Northeastern University"
-%%%     email           = "jsradford@uchicago.edu",
-%%%     supported       = "maybe",
-%%%     docstring       = "Adapted from apa.bst.
-%%%                        Usage: \documentstyle[astron]{...}
-%%%                          ...
-%%%                          \bibliographystyle{aomlike}
-%%%                          ...
-%%%                        This file incorporates features of Sake J.
-%%%                        Hogeveen's `astron.bst' into`apalike.bst'.
-%%%                        The \documentstyle command above invokes
-%%%                        Hogeveen's `astron.sty', which must be in
-%%%                        TeX's search path.
+%%%     author          = "Gorkem Aksaray",
+%%%     version         = "2.0",
+%%%     date            = "25 October 2026",
+%%%     filename        = "aomlike.bst",
+%%%     address         = "Trinity Business School,
+%%%                        Trinity College Dublin,
+%%%                        Dublin 2, Ireland",
+%%%     email           = "aksarayg@tcd.ie",
+%%%     URL             = "https://github.com/gaksaray/AOM-LaTeX-template",
+%%%     supported       = "yes",
+%%%     docstring       = "Author-year bibliography style for Academy of
+%%%                        Management (AOM) journals and conference
+%%%                        submissions, for use with natbib:
 %%%
-%%%                        The modifications implement `\cite*{}', which
-%%%                        generates references in short form.  For
-%%%                        example, `Rogers \cite*{...}' would produce
-%%%                        `Rogers (1992)'."
+%%%                          \usepackage[round,longnamesfirst]{natbib}
+%%%                          \bibliographystyle{aomlike}
+%%%
+%%%                        Citation labels join the last two authors
+%%%                        with \harvardand, which the document must
+%%%                        define (e.g. \protected\def\harvardand{and}).
+%%%
+%%%                        Derived from apalike.bst (O. Patashnik) via
+%%%                        aomcite.bst (J. Radford, 2015)."
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,12 +93,16 @@ FUNCTION {init.state.consts}
   #3 'after.block :=
 }
 
-STRINGS { s t }
+STRINGS { s t u }
 
-FUNCTION {output.nonnull}
-{ 's :=
+%					output.nonnull.sep takes the pending
+%					string, the new string s, and the
+%					separator u used within a sentence
+FUNCTION {output.nonnull.sep}
+{ 'u :=
+  's :=
   output.state mid.sentence =
-    { ", " * write$ }
+    { u * write$ }
     { output.state after.block =
 	{ add.period$ write$
 	  newline$
@@ -116,32 +120,17 @@ FUNCTION {output.nonnull}
   s
 }
 
+FUNCTION {output.nonnull}
+{ ", " output.nonnull.sep }
+
+FUNCTION {output.nonnull.colon}		% for "Address: Publisher"
+{ ": " output.nonnull.sep }
+
 FUNCTION {output}
 { duplicate$ empty$
     'pop$
     'output.nonnull
   if$
-}
-
-FUNCTION {output.nonnull.colon}
-{ 's :=
-  output.state mid.sentence =
-    { ": " * write$ }
-    { output.state after.block =
-    { add.period$ write$
-      newline$
-      "\newblock " write$
-    }
-    { output.state before.all =
-        'write$
-        { add.period$ " " * write$ }
-      if$
-    }
-      if$
-      mid.sentence 'output.state :=
-    }
-  if$
-  s
 }
 
 FUNCTION {output.check}
@@ -159,19 +148,19 @@ FUNCTION {output.check.colon}
     'output.nonnull.colon
   if$
 }
-%					apalike needs this function because
-%					the year has special punctuation;
-%					apalike ignores the month
+%					AOM: "Name. Year." -- the name block
+%					is closed with a period (a no-op after
+%					initials) and the year follows it;
+%					the month is ignored
 FUNCTION {output.year.check}
 { year empty$
     { "empty year in " cite$ * warning$ }
-    { write$
-      " " year * extra.label * "" *
+    { add.period$ write$
+      " " year * extra.label *
       mid.sentence 'output.state :=
     }
   if$
 }
-
 
 
 % output.bibitem is defined later (after make.full.names), so that it can emit
@@ -229,12 +218,6 @@ FUNCTION {new.block.checkb}
 }
 
 
-FUNCTION {date.block}
-{
-  new.block
-}
-
-
 FUNCTION {field.or.null}
 { duplicate$ empty$
     { pop$ "" }
@@ -242,62 +225,14 @@ FUNCTION {field.or.null}
   if$
 }
 
-FUNCTION {emphasize}
+FUNCTION {bolden}			% bold italic: journals, books, series
 { duplicate$ empty$
     { pop$ "" }
-    { "{\em " swap$ * "}" * }
+    { "\textbf{\emph{" swap$ * "}}" * }
   if$
 }
-
-FUNCTION {bibinfo.check}
-{ swap$
-  duplicate$ missing$
-    {
-      pop$ pop$
-      ""
-    }
-    { duplicate$ empty$
-        {
-          swap$ pop$
-        }
-        { swap$
-          pop$
-        }
-      if$
-    }
-  if$
-}
-
-FUNCTION {bolden}
-{ duplicate$ empty$
-    { pop$ "" }
-    { "{\bf \em " swap$ * "}" * }
-  if$
-}
-
-FUNCTION {bTitleBolden}
-{ duplicate$ empty$
-    { pop$ "" }
-    { "{\bf \em " swap$ * "}" * }
-    %{title "t" change.case$}
-  if$
-}
-
 
 INTEGERS { nameptr namesleft numnames }
-
-FUNCTION {format.date}
-{ year "year" bibinfo.check duplicate$ empty$
-    {
-      "empty year in " cite$ * "; set to ????" * warning$
-       pop$ "????"
-    }
-    'skip$
-  if$
-  extra.label *
-  before.all 'output.state :=
-  after.sentence 'output.state :=
-}
 
 FUNCTION {format.names}
 { 's :=
@@ -438,8 +373,8 @@ FUNCTION {format.editors}
     { "" }
     { editor format.names
       editor num.names$ #1 >
-	{ "(Eds.)" * }
-	{ "(Ed.)" * }
+	{ " (Eds.)" * }
+	{ " (Ed.)" * }
       if$
     }
   if$
@@ -477,20 +412,6 @@ FUNCTION {n.dashify}
   while$
 }
 
-%FUNCTION {format.btitle}
-%{ title emphasize
-%{ {title bolden}}
-
-%FUNCTION {format.btitle}
-%{ title "title" bibinfo.check 
-%  duplicate$ empty$ 'skip$
-%    {
-%      title "t" change.case$
-%      title "title" bibinfo.check
-%    }
-%  if$
-%}
-
 FUNCTION {format.btitle}
 { title empty$
     { "" }
@@ -519,8 +440,7 @@ FUNCTION {format.bvolume}
     { "volume" volume tie.or.space.connect
       series empty$
 	'skip$
-	%{ " of " * series emphasize * }
-        { " of " * series bolden * }
+	{ " of " * series bolden * }
       if$
       "volume and number" number either.or.check
     }
@@ -558,38 +478,10 @@ FUNCTION {format.edition}
   if$
 }
 
-INTEGERS { multiresult }
-
-FUNCTION {multi.page.check}
-{ 't :=
-  #0 'multiresult :=
-    { multiresult not
-      t empty$ not
-      and
-    }
-    { t #1 #1 substring$
-      duplicate$ "-" =
-      swap$ duplicate$ "," =
-      swap$ "+" =
-      or or
-	{ #1 'multiresult := }
-	{ t #2 global.max$ substring$ 't := }
-      if$
-    }
-  while$
-  multiresult
-}
-
-FUNCTION {format.pages}
+FUNCTION {format.pages}		% AOM: bare page range, no "pp."
 { pages empty$
     { "" }
-    { pages multi.page.check
-	%{ "pages" pages n.dashify tie.or.space.connect }
-	%{ "page" pages tie.or.space.connect }
-        { " " pages n.dashify tie.or.space.connect }
-	{ " " pages tie.or.space.connect }
-      if$
-    }
+    { pages n.dashify }
   if$
 }
 
@@ -634,9 +526,7 @@ FUNCTION {format.in.ed.booktitle}
 { booktitle empty$
     { "" }
     { editor empty$
-	%{ "In " booktitle emphasize * }
-	%{ "In " format.editors * ", " * booktitle emphasize * }
-        { "In " booktitle bolden * }
+	{ "In " booktitle bolden * }
 	{ "In " format.editors * ", " * booktitle bolden * }
       if$
     }
@@ -694,9 +584,6 @@ FUNCTION {article}
   format.title "title" output.check
   new.block
   crossref missing$
-    %{ journal emphasize "journal" output.check
-    %  format.vol.num.pages output
-    %}
     { journal bolden "journal" output.check
       format.vol.num.pages output
     }
@@ -722,9 +609,7 @@ FUNCTION {book}
       if$
     }
   if$
-  format.date "year" output.check
-  %output.year.check				% special for apalike
-  %date.block
+  output.year.check				% special for apalike
   new.block
   format.btitle bolden "title" output.check
   crossref missing$
