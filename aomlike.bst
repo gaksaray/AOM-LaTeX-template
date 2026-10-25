@@ -1,28 +1,28 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
-%%%     author          = "Jason",
-%%%     version         = "1.0",
-%%%     date            = "January 12, 2015",
-%%%     filename        = "aomcite.bst",
-%%%     Insitution      = "Dept of Sociology, University of Chicago,
-%%%                     = "Visiting Researcher, Lazer Lab, Northeastern University"
-%%%     email           = "jsradford@uchicago.edu",
-%%%     supported       = "maybe",
-%%%     docstring       = "Adapted from apa.bst.
-%%%                        Usage: \documentstyle[astron]{...}
-%%%                          ...
-%%%                          \bibliographystyle{aomlike}
-%%%                          ...
-%%%                        This file incorporates features of Sake J.
-%%%                        Hogeveen's `astron.bst' into`apalike.bst'.
-%%%                        The \documentstyle command above invokes
-%%%                        Hogeveen's `astron.sty', which must be in
-%%%                        TeX's search path.
+%%%     author          = "Gorkem Aksaray",
+%%%     version         = "2.0",
+%%%     date            = "25 October 2026",
+%%%     filename        = "aomlike.bst",
+%%%     address         = "Trinity Business School,
+%%%                        Trinity College Dublin,
+%%%                        Dublin 2, Ireland",
+%%%     email           = "aksarayg@tcd.ie",
+%%%     URL             = "https://github.com/gaksaray/AOM-LaTeX-template",
+%%%     supported       = "yes",
+%%%     docstring       = "Author-year bibliography style for Academy of
+%%%                        Management (AOM) journals and conference
+%%%                        submissions, for use with natbib:
 %%%
-%%%                        The modifications implement `\cite*{}', which
-%%%                        generates references in short form.  For
-%%%                        example, `Rogers \cite*{...}' would produce
-%%%                        `Rogers (1992)'."
+%%%                          \usepackage[round,longnamesfirst]{natbib}
+%%%                          \bibliographystyle{aomlike}
+%%%
+%%%                        Citation labels join the last two authors
+%%%                        with \harvardand, which the document must
+%%%                        define (e.g. \protected\def\harvardand{and}).
+%%%
+%%%                        Derived from apalike.bst (O. Patashnik) via
+%%%                        aomcite.bst (J. Radford, 2015)."
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,12 +93,16 @@ FUNCTION {init.state.consts}
   #3 'after.block :=
 }
 
-STRINGS { s t }
+STRINGS { s t u }
 
-FUNCTION {output.nonnull}
-{ 's :=
+%					output.nonnull.sep takes the pending
+%					string, the new string s, and the
+%					separator u used within a sentence
+FUNCTION {output.nonnull.sep}
+{ 'u :=
+  's :=
   output.state mid.sentence =
-    { ", " * write$ }
+    { u * write$ }
     { output.state after.block =
 	{ add.period$ write$
 	  newline$
@@ -116,6 +120,12 @@ FUNCTION {output.nonnull}
   s
 }
 
+FUNCTION {output.nonnull}
+{ ", " output.nonnull.sep }
+
+FUNCTION {output.nonnull.colon}		% for "Address: Publisher"
+{ ": " output.nonnull.sep }
+
 FUNCTION {output}
 { duplicate$ empty$
     'pop$
@@ -123,25 +133,11 @@ FUNCTION {output}
   if$
 }
 
-FUNCTION {output.nonnull.colon}
-{ 's :=
-  output.state mid.sentence =
-    { ": " * write$ }
-    { output.state after.block =
-    { add.period$ write$
-      newline$
-      "\newblock " write$
-    }
-    { output.state before.all =
-        'write$
-        { add.period$ " " * write$ }
-      if$
-    }
-      if$
-      mid.sentence 'output.state :=
-    }
+FUNCTION {output.colon}
+{ duplicate$ empty$
+    'pop$
+    'output.nonnull.colon
   if$
-  s
 }
 
 FUNCTION {output.check}
@@ -159,19 +155,19 @@ FUNCTION {output.check.colon}
     'output.nonnull.colon
   if$
 }
-%					apalike needs this function because
-%					the year has special punctuation;
-%					apalike ignores the month
+%					AOM: "Name. Year." -- the name block
+%					is closed with a period (a no-op after
+%					initials) and the year follows it;
+%					the month is ignored
 FUNCTION {output.year.check}
 { year empty$
     { "empty year in " cite$ * warning$ }
-    { write$
-      " " year * extra.label * "" *
+    { add.period$ write$
+      " " year * extra.label *
       mid.sentence 'output.state :=
     }
   if$
 }
-
 
 
 % output.bibitem is defined later (after make.full.names), so that it can emit
@@ -229,12 +225,6 @@ FUNCTION {new.block.checkb}
 }
 
 
-FUNCTION {date.block}
-{
-  new.block
-}
-
-
 FUNCTION {field.or.null}
 { duplicate$ empty$
     { pop$ "" }
@@ -242,62 +232,14 @@ FUNCTION {field.or.null}
   if$
 }
 
-FUNCTION {emphasize}
+FUNCTION {bolden}		% bold italic: journals, books, unpublished works
 { duplicate$ empty$
     { pop$ "" }
-    { "{\em " swap$ * "}" * }
+    { "\textbf{\emph{" swap$ * "}}" * }
   if$
 }
-
-FUNCTION {bibinfo.check}
-{ swap$
-  duplicate$ missing$
-    {
-      pop$ pop$
-      ""
-    }
-    { duplicate$ empty$
-        {
-          swap$ pop$
-        }
-        { swap$
-          pop$
-        }
-      if$
-    }
-  if$
-}
-
-FUNCTION {bolden}
-{ duplicate$ empty$
-    { pop$ "" }
-    { "{\bf \em " swap$ * "}" * }
-  if$
-}
-
-FUNCTION {bTitleBolden}
-{ duplicate$ empty$
-    { pop$ "" }
-    { "{\bf \em " swap$ * "}" * }
-    %{title "t" change.case$}
-  if$
-}
-
 
 INTEGERS { nameptr namesleft numnames }
-
-FUNCTION {format.date}
-{ year "year" bibinfo.check duplicate$ empty$
-    {
-      "empty year in " cite$ * "; set to ????" * warning$
-       pop$ "????"
-    }
-    'skip$
-  if$
-  extra.label *
-  before.all 'output.state :=
-  after.sentence 'output.state :=
-}
 
 FUNCTION {format.names}
 { 's :=
@@ -438,11 +380,43 @@ FUNCTION {format.editors}
     { "" }
     { editor format.names
       editor num.names$ #1 >
-	{ "(Eds.)" * }
-	{ "(Ed.)" * }
+	{ " (Eds.)" * }
+	{ " (Ed.)" * }
       if$
     }
   if$
+}
+
+%					AOM chapters: "In W. R. Scott &
+%					J. F. Short (Eds.), ..." -- initials
+%					first, "&" (serial comma for 3+)
+FUNCTION {format.fwd.names}
+{ 's :=
+  #1 'nameptr :=
+  s num.names$ 'numnames :=
+  numnames 'namesleft :=
+    { namesleft #0 > }
+    { s nameptr "{f.~}{vv~}{ll}{, jj}" format.name$ 't :=   % first name first
+      nameptr #1 >
+	{ namesleft #1 >
+	    { ", " * t * }
+	    { numnames #2 >
+		{ "," * }
+		'skip$
+	      if$
+	      t "others" =
+		{ " et~al." * }
+		{ " \& " * t * }
+	      if$
+	    }
+	  if$
+	}
+	't
+      if$
+      nameptr #1 + 'nameptr :=
+      namesleft #1 - 'namesleft :=
+    }
+  while$
 }
 
 FUNCTION {format.title}
@@ -477,27 +451,6 @@ FUNCTION {n.dashify}
   while$
 }
 
-%FUNCTION {format.btitle}
-%{ title emphasize
-%{ {title bolden}}
-
-%FUNCTION {format.btitle}
-%{ title "title" bibinfo.check 
-%  duplicate$ empty$ 'skip$
-%    {
-%      title "t" change.case$
-%      title "title" bibinfo.check
-%    }
-%  if$
-%}
-
-FUNCTION {format.btitle}
-{ title empty$
-    { "" }
-    { title}
-  if$
-}
-
 FUNCTION {tie.or.space.connect}
 { duplicate$ text.length$ #3 <
     { "~" }
@@ -519,8 +472,7 @@ FUNCTION {format.bvolume}
     { "volume" volume tie.or.space.connect
       series empty$
 	'skip$
-	%{ " of " * series emphasize * }
-        { " of " * series bolden * }
+	{ " of " * series bolden * }
       if$
       "volume and number" number either.or.check
     }
@@ -547,49 +499,24 @@ FUNCTION {format.number.series}
   if$
 }
 
-FUNCTION {format.edition}
+FUNCTION {format.edition}		% AOM: "Title (2nd ed.)"
 { edition empty$
     { "" }
-    { output.state mid.sentence =
-	{ edition "l" change.case$ " edition" * }
-	{ edition "t" change.case$ " edition" * }
-      if$
-    }
+    { " (" edition "l" change.case$ * " ed.)" * }
   if$
 }
 
-INTEGERS { multiresult }
-
-FUNCTION {multi.page.check}
-{ 't :=
-  #0 'multiresult :=
-    { multiresult not
-      t empty$ not
-      and
-    }
-    { t #1 #1 substring$
-      duplicate$ "-" =
-      swap$ duplicate$ "," =
-      swap$ "+" =
-      or or
-	{ #1 'multiresult := }
-	{ t #2 global.max$ substring$ 't := }
-      if$
-    }
-  while$
-  multiresult
+FUNCTION {format.btitle}		% AOM: bold italic, as entered
+{ title empty$
+    { "" }
+    { title bolden format.edition * }
+  if$
 }
 
-FUNCTION {format.pages}
+FUNCTION {format.pages}		% AOM: bare page range, no "pp."
 { pages empty$
     { "" }
-    { pages multi.page.check
-	%{ "pages" pages n.dashify tie.or.space.connect }
-	%{ "page" pages tie.or.space.connect }
-        { " " pages n.dashify tie.or.space.connect }
-	{ " " pages tie.or.space.connect }
-      if$
-    }
+    { pages n.dashify }
   if$
 }
 
@@ -630,14 +557,24 @@ FUNCTION {format.chapter.pages}
   if$
 }
 
-FUNCTION {format.in.ed.booktitle}
+FUNCTION {format.in.ed.booktitle}	% AOM: "In Eds. (Eds.), Book, vol. 14"
 { booktitle empty$
     { "" }
-    { editor empty$
-	%{ "In " booktitle emphasize * }
-	%{ "In " format.editors * ", " * booktitle emphasize * }
-        { "In " booktitle bolden * }
-	{ "In " format.editors * ", " * booktitle bolden * }
+    { "In "
+      editor empty$
+	'skip$
+	{ editor format.fwd.names *
+	  editor num.names$ #1 >
+	    { " (Eds.), " }
+	    { " (Ed.), " }
+	  if$
+	  *
+	}
+      if$
+      booktitle bolden * format.edition *
+      volume empty$
+	'skip$
+	{ ", vol." volume tie.or.space.connect * }
       if$
     }
   if$
@@ -654,12 +591,12 @@ FUNCTION {format.thesis.type}
 
 FUNCTION {format.tr.number}
 { type empty$
-    { "Technical Report" }
+    { "Working paper" }
     'type
   if$
   number empty$
     { "t" change.case$ }
-    { number tie.or.space.connect }
+    { " no." * number tie.or.space.connect }
   if$
 }
 
@@ -694,9 +631,6 @@ FUNCTION {article}
   format.title "title" output.check
   new.block
   crossref missing$
-    %{ journal emphasize "journal" output.check
-    %  format.vol.num.pages output
-    %}
     { journal bolden "journal" output.check
       format.vol.num.pages output
     }
@@ -722,11 +656,9 @@ FUNCTION {book}
       if$
     }
   if$
-  format.date "year" output.check
-  %output.year.check				% special for apalike
-  %date.block
+  output.year.check				% special for apalike
   new.block
-  format.btitle bolden "title" output.check
+  format.btitle "title" output.check
   crossref missing$
     { format.bvolume output
       new.block
@@ -739,7 +671,6 @@ FUNCTION {book}
       format.book.crossref output.nonnull
     }
   if$
-  format.edition output
   new.block
   note output
   fin.entry
@@ -778,20 +709,18 @@ FUNCTION {inbook}
   format.btitle "title" output.check
   crossref missing$
     { format.bvolume output
-      format.chapter.pages "chapter and pages" output.check
+      format.chapter.pages "chapter and pages" output.check.colon
       new.block
       format.number.series output
       new.sentence
       address output
       publisher "publisher" output.check.colon
-      
     }
-    { format.chapter.pages "chapter and pages" output.check
+    { format.chapter.pages "chapter and pages" output.check.colon
       new.block
       format.book.crossref output.nonnull
     }
   if$
-  format.edition output
   new.block
   note output
   fin.entry
@@ -807,16 +736,14 @@ FUNCTION {incollection}
   new.block
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
-      format.bvolume output
       format.number.series output
-      format.chapter.pages output
+      format.chapter.pages output.colon
       new.sentence
       address output
       publisher "publisher" output.check.colon
-      format.edition output
     }
     { format.incoll.inproc.crossref output.nonnull
-      format.chapter.pages output
+      format.chapter.pages output.colon
     }
   if$
   new.block
@@ -834,16 +761,15 @@ FUNCTION {inproceedings}
   new.block
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
-      format.bvolume output
       format.number.series output
-      format.pages output
+      format.pages output.colon
       address output					% for apalike
       new.sentence					% there's no year
       organization output				% here so things
       publisher output					% are simpler
     }
     { format.incoll.inproc.crossref output.nonnull
-      format.pages output
+      format.pages output.colon
     }
   if$
   new.block
@@ -863,7 +789,6 @@ FUNCTION {manual}
   organization address new.block.checkb
   organization output
   address output
-  format.edition output
   new.block
   note output
   fin.entry
@@ -875,9 +800,9 @@ FUNCTION {mastersthesis}
   author format.key output				% special for
   output.year.check					% apalike
   new.block
-  format.title "title" output.check
+  format.title bolden "title" output.check
   new.block
-  "Master's thesis" format.thesis.type output.nonnull
+  "Unpublished master's thesis" format.thesis.type output.nonnull
   school "school" output.check
   address output
   new.block
@@ -905,9 +830,9 @@ FUNCTION {phdthesis}
   author format.key output				% special for
   output.year.check					% apalike
   new.block
-  format.btitle "title" output.check
+  format.title bolden "title" output.check
   new.block
-  "PhD thesis" format.thesis.type output.nonnull
+  "Unpublished doctoral dissertation" format.thesis.type output.nonnull
   school "school" output.check
   address output
   new.block
@@ -939,7 +864,7 @@ FUNCTION {techreport}
   author format.key output				% special for
   output.year.check					% apalike
   new.block
-  format.title "title" output.check
+  format.title bolden "title" output.check
   new.block
   format.tr.number output.nonnull
   institution "institution" output.check
@@ -955,7 +880,7 @@ FUNCTION {unpublished}
   author format.key output				% special for
   output.year.check					% apalike
   new.block
-  format.title "title" output.check
+  format.title bolden "title" output.check
   new.block
   note "note" output.check
   fin.entry
