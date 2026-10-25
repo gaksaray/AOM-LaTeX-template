@@ -133,6 +133,13 @@ FUNCTION {output}
   if$
 }
 
+FUNCTION {output.colon}
+{ duplicate$ empty$
+    'pop$
+    'output.nonnull.colon
+  if$
+}
+
 FUNCTION {output.check}
 { 't :=
   duplicate$ empty$
@@ -225,7 +232,7 @@ FUNCTION {field.or.null}
   if$
 }
 
-FUNCTION {bolden}			% bold italic: journals, books, series
+FUNCTION {bolden}		% bold italic: journals, books, unpublished works
 { duplicate$ empty$
     { pop$ "" }
     { "\textbf{\emph{" swap$ * "}}" * }
@@ -380,6 +387,38 @@ FUNCTION {format.editors}
   if$
 }
 
+%					AOM chapters: "In W. R. Scott &
+%					J. F. Short (Eds.), ..." -- initials
+%					first, "&" (serial comma for 3+)
+FUNCTION {format.fwd.names}
+{ 's :=
+  #1 'nameptr :=
+  s num.names$ 'numnames :=
+  numnames 'namesleft :=
+    { namesleft #0 > }
+    { s nameptr "{f.~}{vv~}{ll}{, jj}" format.name$ 't :=   % first name first
+      nameptr #1 >
+	{ namesleft #1 >
+	    { ", " * t * }
+	    { numnames #2 >
+		{ "," * }
+		'skip$
+	      if$
+	      t "others" =
+		{ " et~al." * }
+		{ " \& " * t * }
+	      if$
+	    }
+	  if$
+	}
+	't
+      if$
+      nameptr #1 + 'nameptr :=
+      namesleft #1 - 'namesleft :=
+    }
+  while$
+}
+
 FUNCTION {format.title}
 { title empty$
     { "" }
@@ -410,13 +449,6 @@ FUNCTION {n.dashify}
       if$
     }
   while$
-}
-
-FUNCTION {format.btitle}
-{ title empty$
-    { "" }
-    { title}
-  if$
 }
 
 FUNCTION {tie.or.space.connect}
@@ -467,14 +499,17 @@ FUNCTION {format.number.series}
   if$
 }
 
-FUNCTION {format.edition}
+FUNCTION {format.edition}		% AOM: "Title (2nd ed.)"
 { edition empty$
     { "" }
-    { output.state mid.sentence =
-	{ edition "l" change.case$ " edition" * }
-	{ edition "t" change.case$ " edition" * }
-      if$
-    }
+    { " (" edition "l" change.case$ * " ed.)" * }
+  if$
+}
+
+FUNCTION {format.btitle}		% AOM: bold italic, as entered
+{ title empty$
+    { "" }
+    { title bolden format.edition * }
   if$
 }
 
@@ -522,12 +557,24 @@ FUNCTION {format.chapter.pages}
   if$
 }
 
-FUNCTION {format.in.ed.booktitle}
+FUNCTION {format.in.ed.booktitle}	% AOM: "In Eds. (Eds.), Book, vol. 14"
 { booktitle empty$
     { "" }
-    { editor empty$
-	{ "In " booktitle bolden * }
-	{ "In " format.editors * ", " * booktitle bolden * }
+    { "In "
+      editor empty$
+	'skip$
+	{ editor format.fwd.names *
+	  editor num.names$ #1 >
+	    { " (Eds.), " }
+	    { " (Ed.), " }
+	  if$
+	  *
+	}
+      if$
+      booktitle bolden * format.edition *
+      volume empty$
+	'skip$
+	{ ", vol." volume tie.or.space.connect * }
       if$
     }
   if$
@@ -544,12 +591,12 @@ FUNCTION {format.thesis.type}
 
 FUNCTION {format.tr.number}
 { type empty$
-    { "Technical Report" }
+    { "Working paper" }
     'type
   if$
   number empty$
     { "t" change.case$ }
-    { number tie.or.space.connect }
+    { " no." * number tie.or.space.connect }
   if$
 }
 
@@ -611,7 +658,7 @@ FUNCTION {book}
   if$
   output.year.check				% special for apalike
   new.block
-  format.btitle bolden "title" output.check
+  format.btitle "title" output.check
   crossref missing$
     { format.bvolume output
       new.block
@@ -624,7 +671,6 @@ FUNCTION {book}
       format.book.crossref output.nonnull
     }
   if$
-  format.edition output
   new.block
   note output
   fin.entry
@@ -663,20 +709,18 @@ FUNCTION {inbook}
   format.btitle "title" output.check
   crossref missing$
     { format.bvolume output
-      format.chapter.pages "chapter and pages" output.check
+      format.chapter.pages "chapter and pages" output.check.colon
       new.block
       format.number.series output
       new.sentence
       address output
       publisher "publisher" output.check.colon
-      
     }
-    { format.chapter.pages "chapter and pages" output.check
+    { format.chapter.pages "chapter and pages" output.check.colon
       new.block
       format.book.crossref output.nonnull
     }
   if$
-  format.edition output
   new.block
   note output
   fin.entry
@@ -692,16 +736,14 @@ FUNCTION {incollection}
   new.block
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
-      format.bvolume output
       format.number.series output
-      format.chapter.pages output
+      format.chapter.pages output.colon
       new.sentence
       address output
       publisher "publisher" output.check.colon
-      format.edition output
     }
     { format.incoll.inproc.crossref output.nonnull
-      format.chapter.pages output
+      format.chapter.pages output.colon
     }
   if$
   new.block
@@ -719,16 +761,15 @@ FUNCTION {inproceedings}
   new.block
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
-      format.bvolume output
       format.number.series output
-      format.pages output
+      format.pages output.colon
       address output					% for apalike
       new.sentence					% there's no year
       organization output				% here so things
       publisher output					% are simpler
     }
     { format.incoll.inproc.crossref output.nonnull
-      format.pages output
+      format.pages output.colon
     }
   if$
   new.block
@@ -748,7 +789,6 @@ FUNCTION {manual}
   organization address new.block.checkb
   organization output
   address output
-  format.edition output
   new.block
   note output
   fin.entry
@@ -760,9 +800,9 @@ FUNCTION {mastersthesis}
   author format.key output				% special for
   output.year.check					% apalike
   new.block
-  format.title "title" output.check
+  format.title bolden "title" output.check
   new.block
-  "Master's thesis" format.thesis.type output.nonnull
+  "Unpublished master's thesis" format.thesis.type output.nonnull
   school "school" output.check
   address output
   new.block
@@ -790,9 +830,9 @@ FUNCTION {phdthesis}
   author format.key output				% special for
   output.year.check					% apalike
   new.block
-  format.btitle "title" output.check
+  format.title bolden "title" output.check
   new.block
-  "PhD thesis" format.thesis.type output.nonnull
+  "Unpublished doctoral dissertation" format.thesis.type output.nonnull
   school "school" output.check
   address output
   new.block
@@ -824,7 +864,7 @@ FUNCTION {techreport}
   author format.key output				% special for
   output.year.check					% apalike
   new.block
-  format.title "title" output.check
+  format.title bolden "title" output.check
   new.block
   format.tr.number output.nonnull
   institution "institution" output.check
@@ -840,7 +880,7 @@ FUNCTION {unpublished}
   author format.key output				% special for
   output.year.check					% apalike
   new.block
-  format.title "title" output.check
+  format.title bolden "title" output.check
   new.block
   note "note" output.check
   fin.entry
